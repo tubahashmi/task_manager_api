@@ -1,0 +1,28 @@
+# Black Code Formatter configuration file.
+#
+# This file contains settings, customizations and configurations for Black - The
+# Uncompromising Code Formatter.
+#
+# Usages:
+#   This file is being used as configuration file for Black CLI as well as for
+#   Visual Studio Code (vscode) Python plugin.
+#
+# Examples:
+#   Black CLI examples:
+#   - `black {source_file_or_directory}`
+#   - `black --config .black.toml {source_file_or_directory}`
+#
+# Notes:
+#   Use following links for more information:
+#   - <https://github.com/psf/black>
+#   - <https://github.com/psf/black/blob/master/docs/compatible_configs.md>
+#
+# Authors:
+#   - Tuba Hashmi <tuba.hashmi@techwards.co>
+#
+# Maintainers:
+#   - Tuba Hashmi <tuba.hashmi@techwards.co>
+
+[tool.black]
+line-length = 88
+skip-string-normalization = true
