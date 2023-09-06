@@ -15,7 +15,7 @@ from apiserver import api, manage
 from apiserver.commons.constants import APIResponse
 from apiserver.extensions import db, jwt, migrate
 
-__author__ = 'tuba.hashmi@techwards.co'
+__author__ = 'hashmiatna@gmail.com'
 
 
 def create_app():

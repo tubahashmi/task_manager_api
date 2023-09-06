@@ -18,10 +18,10 @@
 #   - <https://github.com/psf/black/blob/master/docs/compatible_configs.md>
 #
 # Authors:
-#   - Tuba Hashmi <tuba.hashmi@techwards.co>
+#   - Tuba Hashmi <hashmiatna@gmail.com>
 #
 # Maintainers:
-#   - Tuba Hashmi <tuba.hashmi@techwards.co>
+#   - Tuba Hashmi <hashmiatna@gmail.com>
 
 [tool.black]
 line-length = 88

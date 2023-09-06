@@ -8,10 +8,10 @@ Usages:
   like addition of a new feature, bug fix, general improvement, etc.
 
 Authors:
-  - Tuba Hashmi <tuba.hashmi@techwards.co>
+  - Tuba Hashmi <hashmiatna@gmail.com>
 
 Maintainers:
-#   - Tuba Hashmi <tuba.hashmi@techwards.co>
+#   - Tuba Hashmi <hashmiatna@gmail.com>
 -->
 ---
 
