@@ -1,12 +1,12 @@
 #!./venv/bin/python
 # -*- coding: utf-8 -*-
 
-"""Define Schema for Task, Dependency and Comment."""
+"""Define Schema for Task and Comment."""
 # pylint: disable=E1101
 
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-from apiserver.api.models import Task, Comment, Dependency
+from apiserver.api.models import Task, Comment
 from apiserver.api.schemas import UserSchema
 from apiserver.extensions import db, ma
 
@@ -37,6 +37,11 @@ class TaskSchema(SQLAlchemyAutoSchema):
     estimate = ma.Integer(data_key='estimate')
     actual_time_spent = ma.Integer(data_key='actualTimeSpent')
 
+    # Custom fields to enforce conversion
+    type = ma.Function(lambda obj: obj.type.value)
+    priority = ma.Function(lambda obj: obj.priority.value)
+    status = ma.Function(lambda obj: obj.status.value)
+
 
 class CommentSchema(SQLAlchemyAutoSchema):
     """Defines schema for comment collection."""
@@ -51,18 +56,3 @@ class CommentSchema(SQLAlchemyAutoSchema):
     id = ma.String(data_key='id')
     content = ma.String(data_key='content')
     created_at = ma.DateTime(data_key='createdAt')
-
-
-class DependencySchema(SQLAlchemyAutoSchema):
-    """Defines schema for dependency collection."""
-
-    class Meta:
-        """Metadata about dependency table."""
-
-        model = Dependency
-        sqla_session = db.session
-        load_instance = True
-
-    id = ma.String(data_key='id')
-    dependency_task_id = ma.String(data_key='dependencyTaskId')
-    dependent_task_id = ma.String(data_key='dependentTaskId')

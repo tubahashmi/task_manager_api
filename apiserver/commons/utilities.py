@@ -6,6 +6,7 @@ Utilities functions
 # Standard library
 import re
 
+from flask import jsonify, make_response
 # Third-party
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -32,3 +33,9 @@ def authenticate_user(username, password):
     except SQLAlchemyError:
         return None
     return None
+
+
+def custom_unauthorized():
+    return make_response(
+        jsonify({"message": "Authentication failed. Invalid credentials"}), 401
+    )

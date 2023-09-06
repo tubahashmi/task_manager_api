@@ -75,12 +75,14 @@ This file contains logs of all the changes made in this project.
 - [x] Added migration for table `users`: `migrations/versions/bfcafce07ea9_.py`.
 - [x] Added logging configuration: `logging.ini`.
 - [x] Defined model 'Task' for table `tasks` in the db. 
-- [x] Defined model 'SubTask' for table `subtasks` in the db.
 - [x] Defined model 'Comment' for table `comments` in the db.
-- [x] Defined model 'Dependency' for table `dependencies` in the db.
 - [x] Added following files:
   - `apiserver/api/models/tasks.py`
-- [x] Added migration for tables `tasks`, `subtasks`, `comments`, `dependencies` : `migrations/versions/f9647c5f0ee8_.py`.
+- [x] Added migration for tables `tasks`, `comments`: `migrations/versions/2e9e81efe544_.py`.
+- [x] Added schemas for tables `tasks`, `comments`. Added following files:
+  - `apiserver/api/schemas/tasks.py`
+- [x] Added `apiserver/api/resources/tasks.py` to define HTTP methods.
+- [x] Updated `apiserver/api/views.py` to expose API endpoints.
 - [x] Updated `CHANGELOG.md`.
 
 ---

@@ -13,7 +13,7 @@ from flask_jwt_extended import get_jwt_identity
 # First-party
 from apiserver.api.models import User
 from apiserver.commons.constants import APIResponse, APIResponseKeys, APIResponseMessage
-from apiserver.commons.utilities import authenticate_user
+from apiserver.commons.utilities import authenticate_user, custom_unauthorized
 from apiserver.extensions import basic_auth
 
 
@@ -56,6 +56,7 @@ def role_required(required_role):
                     }, HTTPStatus.UNAUTHORIZED
 
                 if current_user.role.name == required_role:
+                    g.current_user = current_user
                     return func(*args, **kwargs)
                 return {
                     'message': APIResponseMessage.ACCESS_DENIED.value
@@ -83,12 +84,35 @@ def verify_password(email, password):
     """
     user = User.query.filter_by(email=email).first()
     if user:
-        g.current_user = authenticate_user(
-            email, password
-        )  # Store the user in the Flask context
-        return True
-    return False, APIResponseMessage.INVALID_CREDENTIALS.value
+        auth_user = authenticate_user(email, password)
+        if auth_user:
+            g.current_user = auth_user
+            return True
 
+    return False
+
+
+def require_basic_auth(func):
+    @wraps(func)
+    def decorator(*args, **kwargs):
+        if 'Authorization' not in request.headers:
+            return {
+                'message': APIResponseMessage.MISSING_AUTH_HEADER.value
+            }, HTTPStatus.UNAUTHORIZED
+        username, password = (
+            request.authorization.username,
+            request.authorization.password,
+        )
+        current_user = authenticate_user(username, password)
+
+        if not current_user:
+            return {
+                'message': APIResponseMessage.INVALID_CREDENTIALS.value
+            }, HTTPStatus.UNAUTHORIZED
+
+        g.current_user = current_user
+        return func(*args, **kwargs)
+    return decorator
 
 def validate_input(validation_rules):
     """
@@ -109,14 +133,12 @@ def validate_input(validation_rules):
 
             for field, rules in validation_rules.items():
                 for rule in rules:
-                    if rule == 'required':
-                        if field not in data:
-                            errors[field] = f'{field} is required.'
-
+                    if rule == 'required' and field not in data:
+                        errors[field] = f'{field} is required.'
             if errors:
                 return {
-                    APIResponseKeys.MESSAGE: errors,
-                    APIResponseKeys.STATUS: APIResponse.ERROR.value,
+                    'message': errors,  # Use plain string keys here
+                    'status': APIResponse.ERROR.value,  # Or use plain string values here
                 }, HTTPStatus.BAD_REQUEST
             return func(*args, **kwargs)
 
@@ -148,6 +170,29 @@ def validate_data(validation_function, key):
                 return func(*args, **kwargs)
 
             return {'errors': f'Invalid {key} format'}, HTTPStatus.BAD_REQUEST
+
+        return wrapper
+
+    return decorator
+
+
+def validate_fields(allowed_fields):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            data = request.get_json()
+
+            # Check if all fields in data are allowed
+            disallowed_fields = [key for key in data.keys() if key not in allowed_fields]
+
+            if disallowed_fields:
+                error_message = {
+                    str(APIResponseKeys.MESSAGE.value): f'Field(s) {", ".join(disallowed_fields)} not allowed to be updated.',
+                    str(APIResponseKeys.STATUS.value): APIResponse.ERROR.value,
+                }
+                return error_message, HTTPStatus.BAD_REQUEST
+
+            return func(*args, **kwargs)
 
         return wrapper
 
