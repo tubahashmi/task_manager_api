@@ -33,13 +33,12 @@ Maintainers:
     `CHANGELOG.md`
     
 ## September 06, 2023
+- [x] Merged branch `initialize-project-structure` [PR#1](https://github.com/tubahashmi/task_manager_api/pull/1).
 - [x] `apiserver/app.py` added to create Flask App.
 - [x] `apiserver/config.py` added to add default configuration to Flask App.
 - [x] `apiserver/extensions.py` added for extension(s) registration.
 - [x] `apiserver/manage.py` added to support CLI management of Flask App
 - [x] `apiserver/run.py` added to define entry point.
-<<<<<<< Updated upstream
-=======
 - [x] `apiserver/commons/constants.py` added to define constants of the system.
 - [x] `apiserver/commons/helpers.py` added to define decorators.
 - [x] `apiserver/commons/utilities.py` added to define utilities functions.
