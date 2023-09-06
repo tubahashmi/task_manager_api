@@ -4,7 +4,9 @@
 resources."""
 # First-party
 from apiserver.api.schemas.roles import RoleSchema
+from apiserver.api.schemas.users import UserSchema
 
 __all__ = [
     'RoleSchema',
+    'UserSchema'
 ]
