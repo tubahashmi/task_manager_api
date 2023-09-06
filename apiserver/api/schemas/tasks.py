@@ -4,9 +4,11 @@
 """Define Schema for Task and Comment."""
 # pylint: disable=E1101
 
+# Third-party
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-from apiserver.api.models import Task, Comment
+# First-party
+from apiserver.api.models import Comment, Task
 from apiserver.api.schemas import UserSchema
 from apiserver.extensions import db, ma
 

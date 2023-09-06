@@ -17,9 +17,14 @@ from flask_restful import Resource
 from apiserver.api.models import Role, User
 from apiserver.api.schemas import UserSchema
 from apiserver.commons.constants import APIResponse, APIResponseKeys, APIResponseMessage
-from apiserver.commons.helpers import role_required, validate_data, validate_input
+from apiserver.commons.helpers import (
+    require_basic_auth,
+    role_required,
+    validate_data,
+    validate_input,
+)
 from apiserver.commons.utilities import is_valid_email
-from apiserver.extensions import basic_auth, db
+from apiserver.extensions import db
 
 logger = logging.getLogger('TaskManagement.api')
 
@@ -155,7 +160,7 @@ class SigninResource(Resource):
     """
 
     method_decorators = [
-        basic_auth.login_required,
+        require_basic_auth,
     ]
 
     def post(self):
@@ -280,9 +285,9 @@ class UserResource(Resource):
                 APIResponseKeys.STATUS.value: APIResponse.SUCCESS.value,
             }, HTTPStatus.OK
         return {
-                APIResponseKeys.MESSAGE.value: APIResponseMessage.USER_NOT_FOUND,
-                APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
-            }, HTTPStatus.NOT_FOUND
+            APIResponseKeys.MESSAGE.value: APIResponseMessage.USER_NOT_FOUND,
+            APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
+        }, HTTPStatus.NOT_FOUND
 
 
 class UsersListResource(Resource):
@@ -296,7 +301,7 @@ class UsersListResource(Resource):
 
     method_decorators = [
         role_required('admin'),
-        basic_auth.login_required(),
+        require_basic_auth,
     ]
 
     def get(self):
@@ -379,7 +384,7 @@ class DeleteAccount(Resource):
 
     method_decorators = [
         role_required('admin'),
-        basic_auth.login_required(),
+        require_basic_auth,
     ]
 
     def delete(self, user_id):
@@ -451,9 +456,9 @@ class DeleteAccount(Resource):
                     APIResponseKeys.STATUS.value: APIResponse.SUCCESS.value,
                 }, HTTPStatus.OK
             return {
-                    APIResponseKeys.MESSAGE.value: APIResponseMessage.USER_NOT_FOUND.value,
-                    APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
-                }, HTTPStatus.NOT_FOUND
+                APIResponseKeys.MESSAGE.value: APIResponseMessage.USER_NOT_FOUND.value,
+                APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
+            }, HTTPStatus.NOT_FOUND
         except Exception as _e:
             return {
                 APIResponseKeys.MESSAGE.value: APIResponseMessage.FAILED_TO_DELETE_USER.value,

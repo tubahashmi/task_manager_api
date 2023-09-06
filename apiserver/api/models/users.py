@@ -5,14 +5,11 @@
 
 # pylint: disable=E1101
 
-# Standard library
-from datetime import datetime
-
 # Third-party
 from werkzeug.security import check_password_hash, generate_password_hash
 
 # First-party
-from apiserver.commons.constants import TASK_UUID_DEFAULT, TASK_DATETIME_DEFAULT
+from apiserver.commons.constants import TASK_DATETIME_DEFAULT
 from apiserver.extensions import db
 
 

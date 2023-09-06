@@ -5,7 +5,6 @@
 
 # Standard library
 import enum
-
 import uuid
 from datetime import datetime
 
@@ -20,7 +19,7 @@ ALLOWED_FIELDS_TO_UPDATE = [
     'priority',
     'status',
     'estimate',
-    'actual_time_spent'
+    'actual_time_spent',
 ]
 
 
@@ -61,6 +60,9 @@ class APIResponseMessage(enum.Enum):
     TASK_CREATED = 'Task created successfully.'
     TASK_UPDATED = 'Task updated successfully.'
     COMMENT_DELETED = 'Comment successfully deleted.'
+    TASK_DELETED = 'Task deleted successfully'
+    TASK_NOT_FOUND = 'Task does not exist'
+
 
 class PriorityLevel(enum.Enum):
     """Priority levels definition for a Task."""

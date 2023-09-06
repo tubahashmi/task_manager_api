@@ -1,7 +1,9 @@
 #!./venv/bin/python
 # -*- coding: utf-8 -*-
+# pylint: disable=C0301
 
 """Various helper functions and decorators"""
+
 # Standard library
 from functools import wraps
 from http import HTTPStatus
@@ -13,8 +15,7 @@ from flask_jwt_extended import get_jwt_identity
 # First-party
 from apiserver.api.models import User
 from apiserver.commons.constants import APIResponse, APIResponseKeys, APIResponseMessage
-from apiserver.commons.utilities import authenticate_user, custom_unauthorized
-from apiserver.extensions import basic_auth
+from apiserver.commons.utilities import authenticate_user
 
 
 def role_required(required_role):
@@ -70,29 +71,21 @@ def role_required(required_role):
     return decorator
 
 
-@basic_auth.verify_password
-def verify_password(email, password):
+def require_basic_auth(func):
     """
-    Verify user credentials for basic authentication.
+    A decorator that checks for Basic Authentication in the request headers
+    and authenticates the user.
 
     Args:
-        email (str): The user's email.
-        password (str): The user's password.
+        func (function): The function to be decorated.
 
     Returns:
-        bool: True if the credentials are valid, False otherwise.
+        function: The decorated function.
+
+    Raises:
+        Unauthorized (HTTPStatus.UNAUTHORIZED): If authentication fails.
     """
-    user = User.query.filter_by(email=email).first()
-    if user:
-        auth_user = authenticate_user(email, password)
-        if auth_user:
-            g.current_user = auth_user
-            return True
 
-    return False
-
-
-def require_basic_auth(func):
     @wraps(func)
     def decorator(*args, **kwargs):
         if 'Authorization' not in request.headers:
@@ -112,7 +105,9 @@ def require_basic_auth(func):
 
         g.current_user = current_user
         return func(*args, **kwargs)
+
     return decorator
+
 
 def validate_input(validation_rules):
     """
@@ -137,8 +132,8 @@ def validate_input(validation_rules):
                         errors[field] = f'{field} is required.'
             if errors:
                 return {
-                    'message': errors,  # Use plain string keys here
-                    'status': APIResponse.ERROR.value,  # Or use plain string values here
+                    'message': errors,
+                    'status': APIResponse.ERROR.value,
                 }, HTTPStatus.BAD_REQUEST
             return func(*args, **kwargs)
 
@@ -177,17 +172,33 @@ def validate_data(validation_function, key):
 
 
 def validate_fields(allowed_fields):
+    """
+    A decorator that checks if the fields in the request data are allowed.
+
+    Args:
+        allowed_fields (list): A list of allowed field names.
+
+    Returns:
+        function: The decorated function.
+
+    Returns an error response with a message if any disallowed fields are found in the request data.
+    """
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
             data = request.get_json()
 
             # Check if all fields in data are allowed
-            disallowed_fields = [key for key in data.keys() if key not in allowed_fields]
+            disallowed_fields = [
+                key for key in data.keys() if key not in allowed_fields
+            ]
 
             if disallowed_fields:
                 error_message = {
-                    str(APIResponseKeys.MESSAGE.value): f'Field(s) {", ".join(disallowed_fields)} not allowed to be updated.',
+                    str(
+                        APIResponseKeys.MESSAGE.value
+                    ): f'Field(s) {", ".join(disallowed_fields)} not allowed to be updated.',
                     str(APIResponseKeys.STATUS.value): APIResponse.ERROR.value,
                 }
                 return error_message, HTTPStatus.BAD_REQUEST
