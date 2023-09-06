@@ -34,10 +34,10 @@ Maintainers:
     
 ## September 06, 2023
 - [x] Added `apiserver/app.py` to create Flask App.
-- [x] Added	`apiserver/config.py` to add default configuration to Flask App.
-- [x] Added	`apiserver/extensions.py` for extension(s) registration.
-- [x] Added	`apiserver/manage.py` to support CLI management of Flask App
-- [x] Added	`apiserver/run.py` to define entry point.
+- [x] Added `apiserver/config.py` to add default configuration to Flask App.
+- [x] Added `apiserver/extensions.py` for extension(s) registration.
+- [x] Added `apiserver/manage.py` to support CLI management of Flask App
+- [x] Added `apiserver/run.py` to define entry point.
 - [x] `CHANGELOG.md` updated.
 
 ---
