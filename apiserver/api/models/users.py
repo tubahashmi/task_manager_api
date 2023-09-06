@@ -5,11 +5,14 @@
 
 # pylint: disable=E1101
 
+# Standard library
 import uuid
 from datetime import datetime
 
-from werkzeug.security import generate_password_hash, check_password_hash
+# Third-party
+from werkzeug.security import check_password_hash, generate_password_hash
 
+# First-party
 from apiserver.extensions import db
 
 
@@ -29,9 +32,16 @@ class User(db.Model):
     Relationships:
         role (Role): Defines the many-to-one relationship between User and Role.
     """
+
     __tablename__ = 'users'
 
-    id = db.Column(db.String(36), primary_key=True, default=str(uuid.uuid4()), unique=True, nullable=False)
+    id = db.Column(
+        db.String(36),
+        primary_key=True,
+        default=str(uuid.uuid4()),
+        unique=True,
+        nullable=False,
+    )
     first_name = db.Column(db.String(50))
     last_name = db.Column(db.String(50))
     email = db.Column(db.String(100), unique=True, nullable=False)

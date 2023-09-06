@@ -1,5 +1,8 @@
+# Third-party
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
+# First-party
 from apiserver.api.models.roles import Role
 
 db_uri = "mysql://admin:admin@localhost/taskmanagerdb"
@@ -9,7 +12,10 @@ engine = create_engine(db_uri)
 Session = sessionmaker(bind=engine)
 session = Session()
 
-import pdb;pdb.set_trace()
+# Standard library
+import pdb
+
+pdb.set_trace()
 # Create 'admin' role
 admin_role = Role(name='admin')
 session.add(admin_role)

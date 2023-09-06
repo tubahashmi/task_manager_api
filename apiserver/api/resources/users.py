@@ -2,20 +2,24 @@
 # -*- coding: utf-8 -*-
 
 """Defines User related APIs."""
+# pylint: disable=C0301,W0718
+
+# Standard library
 import logging
 from http import HTTPStatus
 
-from flask import request, g
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+# Third-party
+from flask import g, request
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from flask_restful import Resource
 
-from apiserver.api.models import User, Role
+# First-party
+from apiserver.api.models import Role, User
 from apiserver.api.schemas import UserSchema
 from apiserver.commons.constants import APIResponse, APIResponseKeys, APIResponseMessage
-from apiserver.commons.helpers import role_required, validate_input, validate_data
+from apiserver.commons.helpers import role_required, validate_data, validate_input
 from apiserver.commons.utilities import is_valid_email
-from apiserver.extensions import db, basic_auth
-
+from apiserver.extensions import basic_auth, db
 
 logger = logging.getLogger('TaskManagement.api')
 
@@ -31,14 +35,15 @@ class SignupResource(Resource):
     """
 
     method_decorators = [
-        validate_input({
-            'first_name': ['required'],
-            'last_name': ['required'],
-            'email': ['required'],
-            'password': ['required']
-        }),
+        validate_input(
+            {
+                'first_name': ['required'],
+                'last_name': ['required'],
+                'email': ['required'],
+                'password': ['required'],
+            }
+        ),
         validate_data(is_valid_email, 'email'),
-
     ]
 
     def post(self):
@@ -103,9 +108,9 @@ class SignupResource(Resource):
         data = request.get_json()
         if User.query.filter_by(email=data['email']).first():
             return {
-                        APIResponseKeys.MESSAGE.value: APIResponseMessage.USER_ALREADY_EXISTS.value,
-                        APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
-                    }, HTTPStatus.CONFLICT
+                APIResponseKeys.MESSAGE.value: APIResponseMessage.USER_ALREADY_EXISTS.value,
+                APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
+            }, HTTPStatus.CONFLICT
 
         # Set the role to "user" if not provided
         role_id = Role.query.filter_by(name=data.get('role', 'user')).first().id
@@ -116,7 +121,7 @@ class SignupResource(Resource):
             last_name=data['last_name'],
             email=data['email'],
             password=data['password'],
-            role_id=role_id  # Use the role value from above
+            role_id=role_id,  # Use the role value from above
         )
 
         try:
@@ -124,19 +129,19 @@ class SignupResource(Resource):
             user.set_password(data['password'])
             db.session.add(user)
             db.session.commit()
-        except:
+        except Exception as _e:
             return {
-                        APIResponseKeys.MESSAGE.value: APIResponseMessage.FAILED_TO_SIGN_UP.value,
-                        APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
-                    }, HTTPStatus.BAD_REQUEST
+                APIResponseKeys.MESSAGE.value: APIResponseMessage.FAILED_TO_SIGN_UP.value,
+                APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
+            }, HTTPStatus.BAD_REQUEST
 
         # Return a response
         schema = UserSchema()
         result = schema.dump(user)
         return {
-                    APIResponseKeys.RESULT.value: result,
-                    APIResponseKeys.STATUS.value: APIResponse.SUCCESS.value,
-                }, HTTPStatus.CREATED
+            APIResponseKeys.RESULT.value: result,
+            APIResponseKeys.STATUS.value: APIResponse.SUCCESS.value,
+        }, HTTPStatus.CREATED
 
 
 class SigninResource(Resource):
@@ -191,16 +196,16 @@ class SigninResource(Resource):
             # Create an access token for the user
             access_token = create_access_token(identity=current_user.id)
             return {
-                        APIResponseKeys.RESULT.value : {
-                            'access_token': access_token,
-                        },
-                        APIResponseKeys.STATUS.value: APIResponse.SUCCESS.value,
-                    }, HTTPStatus.OK
+                APIResponseKeys.RESULT.value: {
+                    'access_token': access_token,
+                },
+                APIResponseKeys.STATUS.value: APIResponse.SUCCESS.value,
+            }, HTTPStatus.OK
         except Exception as _e:
             return {
-                        APIResponseKeys.MESSAGE.value: APIResponseMessage.AUTHENTICATION_FAILED.value,
-                        APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
-                    }, HTTPStatus.BAD_REQUEST
+                APIResponseKeys.MESSAGE.value: APIResponseMessage.AUTHENTICATION_FAILED.value,
+                APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
+            }, HTTPStatus.BAD_REQUEST
 
 
 class UserResource(Resource):
@@ -271,14 +276,13 @@ class UserResource(Resource):
             schema = UserSchema()
             result = schema.dump(user)
             return {
-                        APIResponseKeys.RESULT.value: result,
-                        APIResponseKeys.STATUS.value: APIResponse.SUCCESS.value,
-                    }, HTTPStatus.OK
-        else:
-            return {
-                        APIResponseKeys.MESSAGE.value: APIResponseMessage.USER_NOT_FOUND,
-                        APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
-                    }, HTTPStatus.NOT_FOUND
+                APIResponseKeys.RESULT.value: result,
+                APIResponseKeys.STATUS.value: APIResponse.SUCCESS.value,
+            }, HTTPStatus.OK
+        return {
+                APIResponseKeys.MESSAGE.value: APIResponseMessage.USER_NOT_FOUND,
+                APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
+            }, HTTPStatus.NOT_FOUND
 
 
 class UsersListResource(Resource):
@@ -289,6 +293,7 @@ class UsersListResource(Resource):
     Attributes:
         method_decorators (list): A list of method decorators to apply to the resource methods.
     """
+
     method_decorators = [
         role_required('admin'),
         basic_auth.login_required(),
@@ -353,28 +358,30 @@ class UsersListResource(Resource):
         try:
             query = User.query.order_by('created_at')
             return {
-                       APIResponseKeys.RESULT.value: schema.dump(query),
-                       APIResponseKeys.STATUS.value: APIResponse.SUCCESS.value
-                    }, HTTPStatus.OK
+                APIResponseKeys.RESULT.value: schema.dump(query),
+                APIResponseKeys.STATUS.value: APIResponse.SUCCESS.value,
+            }, HTTPStatus.OK
         except Exception as _e:
             return {
-                        APIResponseKeys.MESSAGE.value: APIResponseMessage.FAILED_TO_FETCH_USERS_LIST.value,
-                        APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
-                    }, HTTPStatus.BAD_REQUEST
+                APIResponseKeys.MESSAGE.value: APIResponseMessage.FAILED_TO_FETCH_USERS_LIST.value,
+                APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
+            }, HTTPStatus.BAD_REQUEST
 
 
 class DeleteAccount(Resource):
     """List Users API.
 
-        This resource allows users with the 'admin' role to delete a users from the system.
+    This resource allows users with the 'admin' role to delete a users from the system.
 
-        Attributes:
-            method_decorators (list): A list of method decorators to apply to the resource methods.
+    Attributes:
+        method_decorators (list): A list of method decorators to apply to the resource methods.
     """
+
     method_decorators = [
         role_required('admin'),
         basic_auth.login_required(),
     ]
+
     def delete(self, user_id):
         """
         Deletes a user account with id <user_id>
@@ -440,16 +447,15 @@ class DeleteAccount(Resource):
                 db.session.delete(user)
                 db.session.commit()
                 return {
-                           APIResponseKeys.MESSAGE.value: 'User deleted successfully.',
-                           APIResponseKeys.STATUS.value: APIResponse.SUCCESS.value,
-                       }, HTTPStatus.OK
-            else:
-                return {
-                           APIResponseKeys.MESSAGE.value: APIResponseMessage.USER_NOT_FOUND.value,
-                           APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
-                       }, HTTPStatus.NOT_FOUND
+                    APIResponseKeys.MESSAGE.value: APIResponseMessage.DELETED_USER.value,
+                    APIResponseKeys.STATUS.value: APIResponse.SUCCESS.value,
+                }, HTTPStatus.OK
+            return {
+                    APIResponseKeys.MESSAGE.value: APIResponseMessage.USER_NOT_FOUND.value,
+                    APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
+                }, HTTPStatus.NOT_FOUND
         except Exception as _e:
             return {
-                       APIResponseKeys.MESSAGE.value: APIResponseMessage.FAILED_TO_DELETE_USER.value,
-                       APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
-                   }, HTTPStatus.BAD_REQUEST
+                APIResponseKeys.MESSAGE.value: APIResponseMessage.FAILED_TO_DELETE_USER.value,
+                APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
+            }, HTTPStatus.BAD_REQUEST

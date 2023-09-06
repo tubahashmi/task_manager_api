@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 
 """Define Schema for User."""
+# pylint: disable=E1101
 
+# Third-party
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
+# First-party
 from apiserver.api.models.users import User
 from apiserver.api.schemas import RoleSchema
 from apiserver.extensions import db, ma
@@ -12,8 +15,10 @@ from apiserver.extensions import db, ma
 
 class UserSchema(SQLAlchemyAutoSchema):
     """Defines schema for user collection."""
+
     class Meta:
         """Metadata about user table."""
+
         model = User
         sqla_session = db.session
         load_instance = True

@@ -31,7 +31,6 @@ class Logger:
         Initialise logger configuration from config file
         """
         log_file = os.path.join(root, _path, filename)
-        import pdb;pdb.set_trace()
         logging.config.fileConfig(
             config, disable_existing_loggers=False, defaults={'log_file': log_file}
         )
