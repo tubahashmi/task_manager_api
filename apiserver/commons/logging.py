@@ -17,8 +17,7 @@ class Logger:
     def __init__(self):
         self.dir_path = os.path.dirname(os.path.abspath(__file__))
         self.root_dir = os.path.dirname(os.path.dirname(os.path.abspath(self.dir_path)))
-
-        self._config = os.path.join(self.dir_path, 'config', 'logging.ini')
+        self._config = os.path.join(self.dir_path, 'logging.ini')
 
         self.log_path = os.getenv('LOG_FILE_PATH')
         self.filename = 'task_manager_api.log'

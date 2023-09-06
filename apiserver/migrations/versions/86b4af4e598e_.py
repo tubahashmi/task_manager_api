@@ -11,8 +11,8 @@ Create Date: 2023-04-04 09:31:25.673260
 # pylint: disable=C0103,C0116,E1101
 
 # Third-party
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = '86b4af4e598e'
@@ -24,9 +24,14 @@ depends_on = None
 def upgrade():
     op.create_table(
         'roles',
-        sa.Column('id', sa.INTEGER, nullable=False, autoincrement=True,),
+        sa.Column(
+            'id',
+            sa.INTEGER,
+            nullable=False,
+            autoincrement=True,
+        ),
         sa.Column('name', sa.String(length=50), nullable=False),
-        sa.PrimaryKeyConstraint('id')
+        sa.PrimaryKeyConstraint('id'),
     )
     # ### end Alembic commands ###
 

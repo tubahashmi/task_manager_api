@@ -5,4 +5,19 @@
 Initializes all required Flask-RESTful resources.
 """
 
-__all__ = []
+# First-party
+from apiserver.api.resources.users import (
+    DeleteAccount,
+    SigninResource,
+    SignupResource,
+    UserResource,
+    UsersListResource,
+)
+
+__all__ = [
+    'DeleteAccount',
+    'UserResource',
+    'UsersListResource',
+    'SigninResource',
+    'SignupResource',
+]

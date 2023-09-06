@@ -51,7 +51,7 @@ Maintainers:
     `apiserver/api/schemas/__init__.py`
     `apiserver/api/views.py`
 - [x] Merged branch `apiserver-setup` [PR#3](https://github.com/tubahashmi/task_manager_api/pull/3)
-- [x] Defined 'Role' for table `role` in the db. Added following files:
+- [x] Defined model 'Role' for table `roles` in the db. Added following files:
     `apiserver/api/models/roles.py`
     `apiserver/api/schemas/roles.py`
 - [x] Updated following files:
@@ -59,6 +59,14 @@ Maintainers:
     `apiserver/api/schemas/__init__.py`
 - [x] Added migration for `roles`: `apiserver/migrations/versions/86b4af4e598e_.py`.
 - [x] Added `apiserver/data_management.py` to populate roles: `admin` and `user` in table `roles`.
+- [x] Merged branch `api-roles-resource` [PR#4](https://github.com/tubahashmi/task_manager_api/pull/4)
+- [x] Defined model 'User' for table `users` in the db. Added following files:
+    `apiserver/api/models/users.py`
+    `apiserver/api/schemas/users.py`
+- [x] Added `apiserver/api/resources/users.py` to define HTTP methods.
+- [x] Updated `apiserver/api/views.py` to expose api endpoints.
+- [x] Added migration for table `users`: `migrations/versions/bfcafce07ea9_.py`
+- [x] Added logging configuration: `logging.ini`
 - [x] `CHANGELOG.md` updated.
 
 ---
