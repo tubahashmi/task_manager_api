@@ -17,8 +17,7 @@ class Logger:
     def __init__(self):
         self.dir_path = os.path.dirname(os.path.abspath(__file__))
         self.root_dir = os.path.dirname(os.path.dirname(os.path.abspath(self.dir_path)))
-
-        self._config = os.path.join(self.dir_path, 'config', 'logging.ini')
+        self._config = os.path.join(self.dir_path, 'logging.ini')
 
         self.log_path = os.getenv('LOG_FILE_PATH')
         self.filename = 'task_manager_api.log'
@@ -32,6 +31,7 @@ class Logger:
         Initialise logger configuration from config file
         """
         log_file = os.path.join(root, _path, filename)
+        import pdb;pdb.set_trace()
         logging.config.fileConfig(
             config, disable_existing_loggers=False, defaults={'log_file': log_file}
         )

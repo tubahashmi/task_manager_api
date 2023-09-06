@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """Defines User related APIs."""
+import logging
 from http import HTTPStatus
 
 from flask import request, g
@@ -14,6 +15,9 @@ from apiserver.commons.constants import APIResponse, APIResponseKeys, APIRespons
 from apiserver.commons.helpers import role_required, validate_input, validate_data
 from apiserver.commons.utilities import is_valid_email
 from apiserver.extensions import db, basic_auth
+
+
+logger = logging.getLogger('TaskManagement.api')
 
 
 class SignupResource(Resource):
@@ -99,9 +103,9 @@ class SignupResource(Resource):
         data = request.get_json()
         if User.query.filter_by(email=data['email']).first():
             return {
-                        APIResponseKeys.MESSAGE.value: APIResponseMessage.FAILED_TO_FETCH_USERS.value,
+                        APIResponseKeys.MESSAGE.value: APIResponseMessage.USER_ALREADY_EXISTS.value,
                         APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
-                    },HTTPStatus.CONFLICT
+                    }, HTTPStatus.CONFLICT
 
         # Set the role to "user" if not provided
         role_id = Role.query.filter_by(name=data.get('role', 'user')).first().id

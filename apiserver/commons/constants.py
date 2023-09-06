@@ -26,7 +26,7 @@ class APIResponseKeys(enum.Enum):
 class APIResponseMessage(enum.Enum):
     """Enum for Status in API Response JSON."""
 
-    FAILED_TO_FETCH_USERS_LIST = 'Failed to fetch Users.'
+    FAILED_TO_FETCH_USER = 'Failed to fetch User.'
     FAILED_TO_SIGN_UP = 'Failed to Sign Up.'
     USER_NOT_FOUND = 'User not found.'
     AUTHENTICATION_FAILED = 'Authentication failed.'
@@ -34,3 +34,4 @@ class APIResponseMessage(enum.Enum):
     INVALID_CREDENTIALS = 'Invalid credentials.'
     MISSING_AUTH_HEADER = 'Authorization header not found.'
     USER_DELETED = 'User deleted successfully.'
+    USER_ALREADY_EXISTS= 'User already exists.'
