@@ -12,10 +12,9 @@ from flask_httpauth import HTTPBasicAuth
 from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
-
-# First-party
 from flask_sqlalchemy import SQLAlchemy
 
+# First-party
 from apiserver.commons.logging import Logger
 
 basic_auth = HTTPBasicAuth()

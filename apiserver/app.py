@@ -13,11 +13,7 @@ from werkzeug.exceptions import default_exceptions
 # First-party
 from apiserver import api, manage
 from apiserver.commons.constants import APIResponse
-from apiserver.extensions import (
-    db,
-    jwt,
-    migrate,
-)
+from apiserver.extensions import db, jwt, migrate
 
 __author__ = 'tuba.hashmi@techwards.co'
 
@@ -52,7 +48,7 @@ def configure_swagger():
                 'name': 'Authorization',
                 'in': 'header',
                 'description': '> - Enter the token with the `Bearer: ` prefix, '
-                               + 'e.g. "Bearer abcde12345".',
+                + 'e.g. "Bearer abcde12345".',
             },
         },
         'title': 'Task Management API Documentation',
