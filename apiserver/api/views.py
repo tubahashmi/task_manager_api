@@ -4,23 +4,98 @@
 """Register API views."""
 
 # Third-party
-from flask import Blueprint
+from flask import Blueprint, app
 from flask_restful import Api
 
 # First-party
 from apiserver.api.resources import (
+    CommentResource,
     DeleteAccount,
     SigninResource,
     SignupResource,
     UserResource,
-    UsersListResource,
+    UsersListResource, TaskResource, AssignedTasksListResource, AssignTaskResource,
+
 )
 
 blueprint = Blueprint('api', __name__, url_prefix='/api/v1')
 api = Api(blueprint)
 
-api.add_resource(SigninResource, '/sign_in', endpoint='sign_in')
-api.add_resource(SignupResource, '/sign_up', endpoint='sign_up')
-api.add_resource(UserResource, '/user_info', endpoint='user_info')
-api.add_resource(UsersListResource, '/users', endpoint='list_users')
-api.add_resource(DeleteAccount, '/delete_user/<string:user_id>', endpoint='delete_user')
+resource_config = {
+
+    SigninResource: [
+        {
+            'endpoint': '/sign_in',
+            'methods': ['POST'],
+        },
+    ],
+    SignupResource: [
+        {
+            'endpoint': '/sign_up',
+            'methods': ['POST'],
+        },
+    ],
+    UserResource: [
+        {
+            'endpoint': '/user_info',
+            'methods': ['GET'],
+        },
+    ],
+    UsersListResource: [
+        {
+            'endpoint': '/users',
+            'methods': ['GET'],
+        },
+    ],
+    DeleteAccount: [
+        {
+            'endpoint': '/delete_user/<string:user_id>',
+            'methods': ['DELETE'],
+        },
+    ],
+    TaskResource: [
+        {
+            'endpoint': '/tasks/<string:task_id>',
+            'methods': ['PUT', 'DELETE'],
+        },
+        {
+            'endpoint': '/tasks/add',
+            'methods': ['POST'],
+        },
+        {
+            'endpoint': '/tasks',
+            'methods': ['GET'],
+        }
+    ],
+    AssignedTasksListResource: [
+        {
+            'endpoint': '/assigned-tasks-list',
+            'methods': ['GET'],
+        },
+    ],
+    AssignTaskResource: [
+        {
+            'endpoint': '/assign-task',
+            'methods': ['POST'],
+        },
+    ],
+    CommentResource: [
+        {
+            'endpoint': '/tasks/<string:task_id>/comments',
+            'methods': ['POST', 'GET'],
+        },
+        {
+            'endpoint': '/tasks/<string:task_id>/comments/<int:comment_id>',
+            'methods': ['PUT', 'DELETE'],
+        },
+    ],
+}
+
+for resource_class, methods_config in resource_config.items():
+    for method_info in methods_config:
+        api.add_resource(
+            resource_class,
+            method_info['endpoint'],
+            endpoint=method_info['endpoint'].replace('/', '_'),  # Use endpoint as 'resource_method'
+            methods=method_info['methods']
+        )

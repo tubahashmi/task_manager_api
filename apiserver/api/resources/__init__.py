@@ -13,6 +13,9 @@ from apiserver.api.resources.users import (
     UserResource,
     UsersListResource,
 )
+from apiserver.api.resources.tasks import (
+TaskResource, AssignedTasksListResource, CommentResource, AssignTaskResource
+)
 
 __all__ = [
     'DeleteAccount',
@@ -20,4 +23,8 @@ __all__ = [
     'UsersListResource',
     'SigninResource',
     'SignupResource',
+    'TaskResource',
+    'AssignedTasksListResource',
+    'CommentResource',
+    'AssignTaskResource'
 ]
