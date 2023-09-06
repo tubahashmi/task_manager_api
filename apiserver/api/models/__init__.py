@@ -3,5 +3,9 @@
 
 """Initializes all models."""
 
+# First-party
+from apiserver.api.models.roles import Role
 
-__all__ = []
+__all__ = [
+    'Role',
+]
