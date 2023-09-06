@@ -23,7 +23,7 @@ Maintainers:
 
 - NO CHANGELOG AVAILABLE
 
-## September 04, 2023
+## September 05, 2023
 
 - [x] Project structure set up.
 - [x] Following files added:
@@ -31,6 +31,13 @@ Maintainers:
     `README.md`
     `TODO.md`
     `CHANGELOG.md`
-
+    
+## September 06, 2023
+- [x] `apiserver/app.py` added to create Flask App.
+- [x] `apiserver/config.py` added to add default configuration to Flask App.
+- [x] `apiserver/extensions.py` added for extension(s) registration.
+- [x] `apiserver/manage.py` added to support CLI management of Flask App
+- [x] `apiserver/run.py` added to define entry point.
+- [x] `CHANGELOG.md` updated.
 
 ---
