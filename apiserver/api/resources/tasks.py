@@ -262,7 +262,7 @@ class TaskResource(Resource):
             return {
                 APIResponseKeys.MESSAGE.value: APIResponseMessage.TASK_NOT_FOUND.value,
                 APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
-            }, HTTPStatus.OK
+            }, HTTPStatus.NOT_FOUND
 
         tasks = Task.query.order_by('created_at').all()
 
@@ -355,7 +355,7 @@ class TaskResource(Resource):
         task = Task.query.get(task_id)
         if not task:
             return {
-                APIResponseKeys.MESSAGE.value: 'Task not found',
+                APIResponseKeys.MESSAGE.value: APIResponseMessage.TASK_NOT_FOUND.value,
                 APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
             }, HTTPStatus.NOT_FOUND
 
@@ -517,7 +517,13 @@ class CommentResource(Resource):
                   example: "error"
         """
 
-        task = Task.query.get_or_404(task_id)
+        task = Task.query.filter_by(id=task_id).first()
+        if not task:
+            return {
+                APIResponseKeys.MESSAGE.value: APIResponseMessage.TASK_NOT_FOUND.value,
+                APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
+            }, HTTPStatus.NOT_FOUND
+
         data = request.get_json()
         new_comment = Comment(content=data.get('comment'))
         task.comments.append(new_comment)
@@ -601,7 +607,12 @@ class CommentResource(Resource):
                   type: string
                   example: "error"
         """
-        task = Task.query.get_or_404(task_id)
+        task = Task.query.filter_by(id=task_id).first()
+        if not task:
+            return {
+                APIResponseKeys.MESSAGE.value: APIResponseMessage.TASK_NOT_FOUND.value,
+                APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
+            }, HTTPStatus.NOT_FOUND
         comments = [comment.to_json() for comment in task.comments]
         return comments
 
@@ -683,8 +694,18 @@ class CommentResource(Resource):
                   type: string
                   example: "error"
         """
-        task = Task.query.get_or_404(task_id)
-        comment = Comment.query.get_or_404(comment_id)
+        task = Task.query.filter_by(id=task_id).first()
+        if not task:
+            return {
+                APIResponseKeys.MESSAGE.value: APIResponseMessage.TASK_NOT_FOUND.value,
+                APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
+            }, HTTPStatus.NOT_FOUND
+        comment = Comment.query.filter_by(id=comment_id).first()
+        if not comment:
+            return {
+                APIResponseKeys.MESSAGE.value: APIResponseMessage.COMMENT_NOT_FOUND.value,
+                APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
+            }, HTTPStatus.NOT_FOUND
 
         data = request.get_json()
         comment.content = data.get('comment', comment.content)
@@ -747,8 +768,15 @@ class CommentResource(Resource):
                   type: string
                   example: "error"
         """
-        task = Task.query.get_or_404(task_id)
-        comment = Comment.query.get_or_404(comment_id)
+        task = Task.query.filter_by(id=task_id).first()
+        comment = Comment.query.filter_by(id=comment_id).first()
+
+        if not (comment and task):
+            return {
+                APIResponseKeys.MESSAGE.value: APIResponseMessage.RESOURCE_NOT_FOUND.value,
+                APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
+            }, HTTPStatus.NOT_FOUND
+
         db.session.delete(comment)
 
         try:
@@ -777,8 +805,8 @@ class AssignTaskResource(Resource):
     """
 
     method_decorators = [
-        require_basic_auth,
         role_required('admin'),  # Only admins can assign tasks to users
+        require_basic_auth,
     ]
 
     @validate_input({'user_id': ['required'], 'task_id': ['required']})
@@ -858,8 +886,13 @@ class AssignTaskResource(Resource):
         user_id = data.get('user_id')
         task_id = data.get('task_id')
 
-        User.query.get_or_404(user_id)
-        task = Task.query.get_or_404(task_id)
+        user = User.query.filter_by(id=user_id).first()
+        task = Task.query.filter_by(id=task_id).first()
+        if not (user and task):
+            return {
+                APIResponseKeys.MESSAGE.value: APIResponseMessage.RESOURCE_NOT_FOUND.value,
+                APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
+            }, HTTPStatus.NOT_FOUND
 
         # Assign the task to the user
         task.assigned_to_id = user_id

@@ -62,6 +62,8 @@ class APIResponseMessage(enum.Enum):
     COMMENT_DELETED = 'Comment successfully deleted.'
     TASK_DELETED = 'Task deleted successfully'
     TASK_NOT_FOUND = 'Task does not exist'
+    COMMENT_NOT_FOUND = 'Comment ID does not exist.'
+    RESOURCE_NOT_FOUND = 'Requested resource(s) does not exist.'
 
 
 class PriorityLevel(enum.Enum):
