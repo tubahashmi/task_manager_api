@@ -1,14 +1,33 @@
+# !./venv/bin/python
+# -*- coding: utf-8 -*-
+
+"""Defines User related APIs."""
+# pylint: disable=C0301,W0718,W0612
+
+# Standard library
 from http import HTTPStatus
 
-from flask import request, g
-from flask_jwt_extended import jwt_required, get_jwt_identity
+# Third-party
+from flask import g, request
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
 
-from apiserver.api.models import Task, Comment, User
-from apiserver.api.schemas.tasks import TaskSchema, CommentSchema
-from apiserver.commons.constants import ALLOWED_FIELDS_TO_UPDATE, APIResponseKeys, APIResponseMessage, APIResponse
-from apiserver.commons.helpers import validate_fields, validate_input, role_required, require_basic_auth
+# First-party
+from apiserver.api.models import Comment, Task, User
+from apiserver.api.schemas.tasks import CommentSchema, TaskSchema
+from apiserver.commons.constants import (
+    ALLOWED_FIELDS_TO_UPDATE,
+    APIResponse,
+    APIResponseKeys,
+    APIResponseMessage,
+)
+from apiserver.commons.helpers import (
+    require_basic_auth,
+    role_required,
+    validate_fields,
+    validate_input,
+)
 from apiserver.extensions import db
 
 
@@ -27,7 +46,11 @@ class TaskResource(Resource):
     ]
 
     @role_required('admin')
-    @validate_input({'title': ['required'], })
+    @validate_input(
+        {
+            'title': ['required'],
+        }
+    )
     def post(self):
         """
         Create a new task.
@@ -236,11 +259,10 @@ class TaskResource(Resource):
                     APIResponseKeys.RESULT.value: TaskSchema().dump(task),
                     APIResponseKeys.STATUS.value: APIResponse.SUCCESS.value,
                 }, HTTPStatus.OK
-            else:
-                return {
-                    APIResponseKeys.MESSAGE.value: 'Task does not exist',
-                    APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
-                }, HTTPStatus.OK
+            return {
+                APIResponseKeys.MESSAGE.value: APIResponseMessage.TASK_NOT_FOUND.value,
+                APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
+            }, HTTPStatus.OK
 
         tasks = Task.query.order_by('created_at').all()
 
@@ -396,11 +418,18 @@ class TaskResource(Resource):
         """
         task = Task.query.get(task_id)
         if not task:
-            return {"message": "Task not found"}, 404
+            return {
+                APIResponseKeys.MESSAGE.value: APIResponseMessage.TASK_NOT_FOUND.value,
+                APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
+            }, HTTPStatus.NOT_FOUND
 
         db.session.delete(task)
         db.session.commit()
-        return {"message": "Task deleted successfully"}
+        return {
+            APIResponseKeys.MESSAGE.value: APIResponseMessage.TASK_DELETED.value,
+            APIResponseKeys.STATUS.value: APIResponse.SUCCESS.value,
+        }, HTTPStatus.OK
+
 
 class CommentResource(Resource):
     """
@@ -412,9 +441,7 @@ class CommentResource(Resource):
         method_decorators (list): A list of method decorators to apply to the resource methods.
     """
 
-    method_decorators = [
-        require_basic_auth
-    ]
+    method_decorators = [require_basic_auth]
 
     @validate_input({'comment': ['required']})
     def post(self, task_id):
@@ -849,7 +876,7 @@ class AssignTaskResource(Resource):
         return {
             APIResponseKeys.MESSAGE.value: APIResponseMessage.TASK_ASSIGNED.value,
             APIResponseKeys.STATUS.value: APIResponse.SUCCESS.value,
-            APIResponseKeys.RESULT.value: TaskSchema().dump(task)
+            APIResponseKeys.RESULT.value: TaskSchema().dump(task),
         }, HTTPStatus.CREATED
 
 
@@ -862,6 +889,7 @@ class AssignedTasksListResource(Resource):
     Attributes:
         method_decorators (list): A list of method decorators to apply to the resource methods.
     """
+
     method_decorators = [
         jwt_required(),
     ]

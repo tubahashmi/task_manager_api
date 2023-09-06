@@ -2,18 +2,18 @@
 # -*- coding: utf-8 -*-
 
 """Define class for task record."""
-import uuid
-# pylint: disable=E1101
-
-# Standard library
-from datetime import datetime
-
-from sqlalchemy import ForeignKeyConstraint
 
 # First-party
-from apiserver.commons.constants import PriorityLevel, TaskStatus, TASK_DATETIME_DEFAULT, TASKS_ID, \
-    TaskType
+from apiserver.commons.constants import (
+    TASK_DATETIME_DEFAULT,
+    TASKS_ID,
+    PriorityLevel,
+    TaskStatus,
+    TaskType,
+)
 from apiserver.extensions import db
+
+# pylint: disable=E1101
 
 
 class Task(db.Model):
@@ -29,22 +29,30 @@ class Task(db.Model):
 
     id = db.Column(
         db.Integer,
-        primary_key=True,
         autoincrement=True,
-        unique=True,
+        primary_key=True,
         nullable=False,
+        unique=True,
     )
     title = db.Column(db.String(255), nullable=False, unique=True)
     description = db.Column(db.Text, nullable=True)
     due_date = db.Column(db.DateTime, nullable=True)
-    priority = db.Column(db.Enum(PriorityLevel), nullable=False, default=PriorityLevel.MEDIUM)
+    priority = db.Column(
+        db.Enum(PriorityLevel), nullable=False, default=PriorityLevel.MEDIUM
+    )
     status = db.Column(db.Enum(TaskStatus), nullable=False, default=TaskStatus.OPEN)
-    created_by_id = db.Column(db.Integer,
-                              db.ForeignKey('users.id'))  # Relationship with the 'User' who created the task
-    created_by = db.relationship('User', backref='tasks_created', foreign_keys=[created_by_id])
-    assigned_to_id = db.Column(db.Integer,
-                               db.ForeignKey('users.id'))  # Relationship with the 'User' assigned to the task
-    assigned_to = db.relationship('User', backref='tasks_assigned', foreign_keys=[assigned_to_id])
+    created_by_id = db.Column(
+        db.Integer, db.ForeignKey('users.id')
+    )  # Relationship with the 'User' who created the task
+    created_by = db.relationship(
+        'User', backref='tasks_created', foreign_keys=[created_by_id]
+    )
+    assigned_to_id = db.Column(
+        db.Integer, db.ForeignKey('users.id')
+    )  # Relationship with the 'User' assigned to the task
+    assigned_to = db.relationship(
+        'User', backref='tasks_assigned', foreign_keys=[assigned_to_id]
+    )
     created_at = db.Column(db.DateTime, default=TASK_DATETIME_DEFAULT)
     updated_at = db.Column(db.DateTime, default=TASK_DATETIME_DEFAULT)
     completion_date = db.Column(db.DateTime, nullable=True)
@@ -74,6 +82,9 @@ class Comment(db.Model):
     task_id = db.Column(db.Integer, db.ForeignKey(TASKS_ID), nullable=False)
 
     def to_json(self):
+        """
+        Convert into Json for serialization.
+        """
         return {
             'id': self.id,
             'content': self.content,

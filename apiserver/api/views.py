@@ -4,25 +4,26 @@
 """Register API views."""
 
 # Third-party
-from flask import Blueprint, app
+from flask import Blueprint
 from flask_restful import Api
 
 # First-party
 from apiserver.api.resources import (
+    AssignedTasksListResource,
+    AssignTaskResource,
     CommentResource,
     DeleteAccount,
     SigninResource,
     SignupResource,
+    TaskResource,
     UserResource,
-    UsersListResource, TaskResource, AssignedTasksListResource, AssignTaskResource,
-
+    UsersListResource,
 )
 
 blueprint = Blueprint('api', __name__, url_prefix='/api/v1')
 api = Api(blueprint)
 
 resource_config = {
-
     SigninResource: [
         {
             'endpoint': '/sign_in',
@@ -65,7 +66,7 @@ resource_config = {
         {
             'endpoint': '/tasks',
             'methods': ['GET'],
-        }
+        },
     ],
     AssignedTasksListResource: [
         {
@@ -96,6 +97,8 @@ for resource_class, methods_config in resource_config.items():
         api.add_resource(
             resource_class,
             method_info['endpoint'],
-            endpoint=method_info['endpoint'].replace('/', '_'),  # Use endpoint as 'resource_method'
-            methods=method_info['methods']
+            endpoint=method_info['endpoint'].replace(
+                '/', '_'
+            ),  # Use endpoint as 'resource_method'
+            methods=method_info['methods'],
         )

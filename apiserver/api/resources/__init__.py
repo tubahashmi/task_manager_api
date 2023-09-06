@@ -6,15 +6,18 @@ Initializes all required Flask-RESTful resources.
 """
 
 # First-party
+from apiserver.api.resources.tasks import (
+    AssignedTasksListResource,
+    AssignTaskResource,
+    CommentResource,
+    TaskResource,
+)
 from apiserver.api.resources.users import (
     DeleteAccount,
     SigninResource,
     SignupResource,
     UserResource,
     UsersListResource,
-)
-from apiserver.api.resources.tasks import (
-TaskResource, AssignedTasksListResource, CommentResource, AssignTaskResource
 )
 
 __all__ = [
@@ -26,5 +29,5 @@ __all__ = [
     'TaskResource',
     'AssignedTasksListResource',
     'CommentResource',
-    'AssignTaskResource'
+    'AssignTaskResource',
 ]
