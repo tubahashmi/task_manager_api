@@ -62,3 +62,10 @@ class TaskStatus(enum.IntEnum):
     IN_WORK = 1
     COMPLETED = 2
     DISCARD = 3
+
+
+class TaskType(enum.Enum):
+    """Task types definition for a Task."""
+
+    TASK = 0
+    SUBTASK = 1

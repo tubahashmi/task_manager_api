@@ -11,7 +11,8 @@ from datetime import datetime
 from sqlalchemy import ForeignKeyConstraint
 
 # First-party
-from apiserver.commons.constants import PriorityLevel, TaskStatus, TASK_UUID_DEFAULT, TASK_DATETIME_DEFAULT, TASKS_ID
+from apiserver.commons.constants import PriorityLevel, TaskStatus, TASK_UUID_DEFAULT, TASK_DATETIME_DEFAULT, TASKS_ID, \
+    TaskType
 from apiserver.extensions import db
 
 
@@ -47,12 +48,11 @@ class Task(db.Model):
     created_at = db.Column(db.DateTime, default=TASK_DATETIME_DEFAULT)
     updated_at = db.Column(db.DateTime, default=TASK_DATETIME_DEFAULT)
     completion_date = db.Column(db.DateTime, nullable=True)
-    tags = db.Column(db.String(255))
     recurring_task = db.Column(db.Boolean, default=False)
     estimate = db.Column(db.Integer, nullable=True)
     actual_time_spent = db.Column(db.Integer, nullable=True)
     comments = db.relationship('Comment', backref='task', lazy=True)
-    subtasks = db.relationship('Subtask', backref='parent_task', lazy=True)
+    type = db.Column(db.Enum(TaskType), nullable=False, default=TaskType.TASK)
     dependencies = db.relationship(
         'Dependency',
         backref='dependent_task',
@@ -77,25 +77,6 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=TASK_DATETIME_DEFAULT)
-    task_id = db.Column(db.String(36), db.ForeignKey(TASKS_ID), nullable=False)
-
-
-class Subtask(db.Model):
-    """
-    Represents a subtask of a task.
-
-    Attributes:
-        id (int): A unique identifier for the subtask.
-        title (str): The title or description of the subtask.
-        completed (bool): Indicates whether the subtask is completed or not.
-        task_id (int): The ID of the parent task to which the subtask belongs.
-    """
-
-    __tablename__ = 'subtasks'
-
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(255), nullable=False)
-    completed = db.Column(db.Boolean, default=False)
     task_id = db.Column(db.String(36), db.ForeignKey(TASKS_ID), nullable=False)
 
 
