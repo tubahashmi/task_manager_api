@@ -6,13 +6,13 @@
 # pylint: disable=E1101
 
 # Standard library
-import uuid
 from datetime import datetime
 
 # Third-party
 from werkzeug.security import check_password_hash, generate_password_hash
 
 # First-party
+from apiserver.commons.constants import TASK_UUID_DEFAULT, TASK_DATETIME_DEFAULT
 from apiserver.extensions import db
 
 
@@ -38,7 +38,7 @@ class User(db.Model):
     id = db.Column(
         db.String(36),
         primary_key=True,
-        default=str(uuid.uuid4()),
+        default=TASK_UUID_DEFAULT,
         unique=True,
         nullable=False,
     )
@@ -47,7 +47,7 @@ class User(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=TASK_DATETIME_DEFAULT)
 
     # Define the many-to-one relationship between User and Role
     role = db.relationship('Role', foreign_keys=[role_id], back_populates='users')
