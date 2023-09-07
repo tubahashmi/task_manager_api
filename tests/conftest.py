@@ -6,7 +6,7 @@ from apiserver.app import create_app
 from tests.config import TestingConfig
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def app():
     """Flask Test App"""
     with patch('flask_sqlalchemy.SQLAlchemy'):
