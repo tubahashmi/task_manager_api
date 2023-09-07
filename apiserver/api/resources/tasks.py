@@ -176,7 +176,6 @@ class TaskResource(Resource):
                 'status': APIResponse.FAIL.value,
             }, HTTPStatus.BAD_REQUEST
 
-    @role_required('admin')
     def get(self):
         """
         Retrieve a list of tasks or a specific task.
