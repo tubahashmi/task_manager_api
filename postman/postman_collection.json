@@ -1,0 +1,705 @@
+{
+	"info": {
+		"_postman_id": "8a2caaa5-9261-4629-8368-9f64a12a4e9e",
+		"name": "TaskManagementAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User Registeration",
+			"item": [
+				{
+					"name": "Sign Up",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\" : \"Another\",\n    \"last_name\" : \"Hashmi\",\n    \"email\": \"tuba@gmail.com\",\n    \"password\": \"hello123\",\n    \"role\": \"admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local-host}}/api/v1/sign_up",
+							"host": [
+								"{{local-host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sign_up"
+							]
+						},
+						"description": "Creates a new user account in db."
+					},
+					"response": []
+				}
+			],
+			"description": "Registers a new user account with the system.",
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "password",
+						"value": "hello123",
+						"type": "string"
+					},
+					{
+						"key": "username",
+						"value": "tuba.hashmi@gmail.com",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "User Login",
+			"item": [
+				{
+					"name": "Sign In",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"task-management-access-token\", pm.response.json()[\"result\"][\"access_token\"])",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "hello123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "tuba.hashmi@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local-host}}/api/v1/sign_in",
+							"host": [
+								"{{local-host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sign_in"
+							]
+						},
+						"description": "Lets a user sign in using username & password."
+					},
+					"response": []
+				},
+				{
+					"name": "Get User_info",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{task-management-access-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local-host}}/api/v1/user_info",
+							"host": [
+								"{{local-host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user_info"
+							]
+						},
+						"description": "Fetches logged in User's details."
+					},
+					"response": []
+				}
+			],
+			"description": "Logs in the user using the provided username and password and generates an access token. The access token is required for subsequent API calls that require authentication via Bearer Token."
+		},
+		{
+			"name": "Admin Access",
+			"item": [
+				{
+					"name": "List Users",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "hello123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "tuba.hashmi@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local-host}}/api/v1/users",
+							"host": [
+								"{{local-host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						},
+						"description": "Fetches all users in the system."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "hello123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "tuba.hashmi@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local-host}}/api/v1/delete_user/6",
+							"host": [
+								"{{local-host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"delete_user",
+								"6"
+							]
+						},
+						"description": "Allows an admin to remove a user from the system."
+					},
+					"response": []
+				}
+			],
+			"description": "API requests that are intended for Admins of the system only.\n1. Get a list of all users in the system.\n2. Delete a user from the system."
+		},
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "Add a new Task",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "hello123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "tuba.hashmi@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Three New Task\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local-host}}/api/v1/tasks/add",
+							"host": [
+								"{{local-host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tasks",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch a Task By ID as Admin",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "hello123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "tuba.hashmi@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local-host}}/api/v1/tasks?task_id=4",
+							"host": [
+								"{{local-host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tasks"
+							],
+							"query": [
+								{
+									"key": "task_id",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch All Tasks as Admin",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "hello123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "tuba.hashmi@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local-host}}/api/v1/tasks",
+							"host": [
+								"{{local-host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Task to a User",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "hello123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "tuba.hashmi@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"3\",\n    \"task_id\": \"4\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local-host}}/api/v1/assign-task",
+							"host": [
+								"{{local-host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"assign-task"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a Task",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "hello123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "tuba.hashmi@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"I'll not be deleted\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local-host}}/api/v1/tasks/4",
+							"host": [
+								"{{local-host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tasks",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Task",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "hello123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "tuba.hashmi@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local-host}}/api/v1/tasks/4",
+							"host": [
+								"{{local-host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tasks",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve All Tasks Assigned",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{task-management-access-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local-host}}/api/v1/assigned-tasks-list",
+							"host": [
+								"{{local-host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"assigned-tasks-list"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comments",
+			"item": [
+				{
+					"name": "Add Comment to a Task",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "hello123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "tuba.hashmi@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"comment\": \"tcoment 4\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local-host}}/api/v1/tasks/100/comments",
+							"host": [
+								"{{local-host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tasks",
+								"100",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Comment from a Task",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "hello123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "tuba.hashmi@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local-host}}/api/v1/tasks/1/comments/40",
+							"host": [
+								"{{local-host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tasks",
+								"1",
+								"comments",
+								"40"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a Comment on a Task",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "hello123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "tuba.hashmi@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"comment\": \"edited comment 4\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local-host}}/api/v1/tasks/1/comments/43",
+							"host": [
+								"{{local-host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tasks",
+								"1",
+								"comments",
+								"43"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List all Comments on a Task",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "hello123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "tuba.hashmi@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local-host}}/api/v1/tasks/1/comments",
+							"host": [
+								"{{local-host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tasks",
+								"1",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
