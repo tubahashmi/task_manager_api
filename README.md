@@ -1,9 +1,8 @@
 # Task Management API [A Software Engineering Task]
 
-[TOC]
-
 ## Overview
 
+[Task description](https://drive.google.com/file/d/1frcBcIyzwzNyXy0yThwCkgYD2tlY_DMV/view?usp=sharing)
 
 ## Architecture
 
@@ -58,7 +57,7 @@ pip install -r requirements.txt
 
 Export the following environment variables, once the requirements have been installed.
 
-***NOTE:** All these variables should be defined in **[.env]()** directory for different working environments (.development/.production/.staging).*
+***NOTE:** All these variables should be defined in [.env]()
 
 ```shell script
 export PYTHONPATH=/path/to/your/project
@@ -116,8 +115,6 @@ export ROOT_PATH=/path/to/your/project
 │   │   ├── alembic.ini
 │   │   ├── env.py
 │   │   └── script.py.mako
-│   ├── tests
-│   │   └── __init__.py
 │   ├── __init__.py
 │   ├── app.py
 │   ├── config.py
@@ -126,7 +123,14 @@ export ROOT_PATH=/path/to/your/project
 │   ├── manage.py
 │   └── run.py
 ├── deployment
+│   ├── local
+│   │   ├── Dockerfile
+│   │   └── start
+│   ├── production
+│   ├── staging
 │   └── __init__.py
+├── postman
+│   └── postman_collection.json
 ├── template
 │   ├── data
 │   │   ├── comments.json
@@ -135,11 +139,31 @@ export ROOT_PATH=/path/to/your/project
 │   │   └── users.json
 │   └── __init__.py
 ├── tests
-│   └── __init__.py
+│   ├── test_comments
+│   │   ├── __init__.py
+│   │   ├── conftest.py
+│   │   ├── test_add_comment.py
+│   │   ├── test_delete_comment.py
+│   │   ├── test_fetch_comments.py
+│   │   └── test_update_comment.py
+│   ├── test_signin
+│   │   ├── __init__.py
+│   │   ├── conftest.py
+│   │   └── test_signin.py
+│   ├── test_signup
+│   │   ├── __init__.py
+│   │   ├── conftest.py
+│   │   └── test_signup.py
+│   ├── README.md
+│   ├── __init__.py
+│   ├── config.py
+│   └── conftest.py
 ├── CHANGELOG.md
+├── Makefile
 ├── README.md
 ├── TODO.md
 ├── cspell.json
+├── docker-compose.yaml
 └── requirements.txt
 ```
 
@@ -282,6 +306,41 @@ python data_management.py -c tasks comments
 
 ```
 Purpose is to pre-populate with dummy data in files.
+
+
+## Unit Tests
+
+Following unit tests are added:
+
+**Sign Up**
+- Positive Case: Sign Up with valid data (POST)
+- Negative Case: Sign Up with invalid data (POST)
+
+**Log In**
+- Positive Case: Login with valid creds (POST)
+- Negative Case: Login with invalid cred (POST)
+
+**Add Comment**
+- Positive Case: Add a valid comment (POST)
+- Negative Case: Add an invalid comment (POST)
+
+**Update Comment**
+- Positive Case: Update a comment with valid task_id and comment_id data (PUT)
+- Negative Case: Update a comment with invalid task_id (PUT)
+- Negative Case: Update a comment with invalid comment_id (PUT)
+
+**Fetch Comment**
+- Positive Case: Fetch comments on valid task_id (GET)
+- Negative Case: Fetch comments on invalid task_id (GET)
+
+**Delete Comment**
+- Positive Case: Delete a comment with valid task_id and comment_id (DELETE)
+- Negative Case: Delete a comment with invalid task_id (DELETE)
+- Negative Case: Delete a comment with invalid comment_id (DELETE)
+
+Further details on unitests can be found in [README.md](https://github.com/tubahashmi/task_manager_api/blob/main/tests/README.md) of `tests/`
+
+**Current coverage is **82%** and report can be found at [index.html](https://github.com/tubahashmi/task_manager_api/blob/main/tests/index.html)**
 
 
 ## Setup for Testing API Server
@@ -437,3 +496,10 @@ Authorization: Basic {{basic-auth-credentials}}
 ```
 
 Replace {{local-host}}, {{basic-auth-credentials}}, and {{task-management-access-token}} with the appropriate values when making requests.
+
+
+
+
+### Screenshots
+
+Screenshots of the successful API calls can be found at [screenshots](https://github.com/tubahashmi/task_manager_api/tree/main/screenshots)
