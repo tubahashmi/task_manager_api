@@ -28,7 +28,7 @@ The directory contains unit-tests for the backend application of Task Management
 
 3- Run tests
 
-`coverage run -m pytest -v unit_tests/ `
+`coverage run -m pytest -v tests/ `
 
 `coverage report -m`
 

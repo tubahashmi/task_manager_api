@@ -541,7 +541,6 @@ class CommentResource(Resource):
             APIResponseKeys.STATUS.value: APIResponse.SUCCESS.value,
         }, HTTPStatus.CREATED
 
-    @require_basic_auth
     def get(self, task_id):
         """
         Retrieve all comments on a task.
@@ -613,7 +612,10 @@ class CommentResource(Resource):
                 APIResponseKeys.STATUS.value: APIResponse.FAIL.value,
             }, HTTPStatus.NOT_FOUND
         comments = [comment.to_json() for comment in task.comments]
-        return comments
+        return {
+            APIResponseKeys.RESULT.value: comments,
+            APIResponseKeys.STATUS.value: APIResponse.SUCCESS.value,
+        }, HTTPStatus.OK
 
     @validate_input({'comment': ['required']})
     def put(self, task_id, comment_id):
@@ -716,7 +718,6 @@ class CommentResource(Resource):
             APIResponseKeys.STATUS.value: APIResponse.SUCCESS.value,
         }, HTTPStatus.OK
 
-    @require_basic_auth
     def delete(self, task_id, comment_id):
         """
         Delete a comment on a task.
