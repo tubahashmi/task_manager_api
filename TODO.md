@@ -21,6 +21,8 @@ Maintainers:
 
 ## Todo
 
-- [ ] ADD TODO ITEM HERE
+- [ ] Unit tests for all APIs and methods.
+- [ ] Dockerization
+- [ ] Deployment
 
 ---
