@@ -39,13 +39,18 @@ Create a new Python virtual environment.
 
 ```sh
 pip install virtualenv
-virtualenv -p /usr/bin/python3 venv
+```
+
+```
+python3 -m venv venv
 ```
 
 Install the latest requirements in the `virtualenv` after activating it.
 
 ```sh
 source venv/bin/activate
+```
+```
 pip install -r requirements.txt
 ```
 
@@ -77,22 +82,58 @@ export ROOT_PATH=/path/to/your/project
 ```shell script
 .
 ├── apiserver
-│   ├── models
-│   │   └── __init__.py
-│   ├── resources
-│   │   └── __init__.py
-│   ├── schemas
+│   ├── api
+│   │   ├── models
+│   │   │   ├── __init__.py
+│   │   │   ├── roles.py
+│   │   │   ├── tasks.py
+│   │   │   └── users.py
+│   │   ├── resources
+│   │   │   ├── __init__.py
+│   │   │   ├── tasks.py
+│   │   │   └── users.py
+│   │   ├── schemas
+│   │   │   ├── __init__.py
+│   │   │   ├── roles.py
+│   │   │   ├── tasks.py
+│   │   │   └── users.py
+│   │   ├── __init__.py
+│   │   └── views.py
+│   ├── commons
+│   │   ├── __init__.py
+│   │   ├── constants.py
+│   │   ├── helpers.py
+│   │   ├── logging.ini
+│   │   ├── logging.py
+│   │   └── utilities.py
+│   ├── migrations
+│   │   ├── versions
+│   │   │   ├── 2e9e81efe544_.py
+│   │   │   ├── 86b4af4e598e_.py
+│   │   │   ├── __init__.py
+│   │   │   └── bfcafce07ea9_.py
+│   │   ├── README
+│   │   ├── alembic.ini
+│   │   ├── env.py
+│   │   └── script.py.mako
+│   ├── tests
 │   │   └── __init__.py
 │   ├── __init__.py
-│   ├── apiserver.py
+│   ├── app.py
 │   ├── config.py
+│   ├── data_management.py
 │   ├── extensions.py
-│   ├── run.py
-│   └── views.py
-├── commons
-│   ├── __init__.py
-│   ├── constants.py
-│   └── logging.py
+│   ├── manage.py
+│   └── run.py
+├── deployment
+│   └── __init__.py
+├── template
+│   ├── data
+│   │   ├── comments.json
+│   │   ├── roles.json
+│   │   ├── tasks.json
+│   │   └── users.json
+│   └── __init__.py
 ├── tests
 │   └── __init__.py
 ├── CHANGELOG.md
@@ -169,22 +210,39 @@ After this we will start the Flask app along with New Relic APM.
 Go to project root directory.
 
 ```sh
-cd ./task_manager_api
+cd ./task_manager_api/
 ```
+
+Now go to `./apiserver` directory from the root directory.
+
+```sh
+cd ./apiserver/
+```
+
+Start the app by running the following command.
+
+```sh
+flask run -h 0.0.0.0
+```
+
 
 ### Migration and Data Population
 
 After starting Flask, we will apply migration and populate the data in database.
 
-For applying migrations (present at ``), open a new terminal and execute the following Flask command.
+For applying migrations (present at `task_manager_api/apiserver/migrations`), open a new terminal and execute the following Flask command.
 
+
+```sh
+flask db upgrade
+```
 
 You should see a similar output.
 
 ```txt
 INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
 INFO  [alembic.runtime.migration] Will assume transactional DDL.
-INFO  [alembic.runtime.migration] Running upgrade  -> 5397d7b6a9c2, empty message
+INFO  [alembic.runtime.migration] Running upgrade  -> bfcafce07ea9, empty message
 ```
 
 Create database with all the tables.
@@ -198,8 +256,32 @@ flask init
 Once the migrations have been applied to the database, the data can be populated.
 
 
-
 ## Data Management and Maintenance
+
+In order to insert data in the database and to manage it, a Python script `./apiserver/data_management.py` can be used as follows:
+
+***NOTE:** This script should be run in any way to define roles in the system.*
+
+```shell
+python data_management.py
+```
+
+### Description
+
+```txt
+Script for populating and maintaining database using template files.
+
+usage: data_management.py [-h] -c {users, tasks, comments, all} [{users, tasks, comments, all} ...]
+
+Examples:
+python data_management.py
+python data_management.py -c all
+python data_management.py -c users
+python data_management.py -c tasks
+python data_management.py -c tasks comments
+
+```
+Purpose is to pre-populate with dummy data in files.
 
 
 ## Setup for Testing API Server
@@ -207,3 +289,151 @@ Once the migrations have been applied to the database, the data can be populated
 Using **[Postman](https://www.postman.com/)**, API(s) can be tested with ease.
 
 ### HTTP Requests
+
+#### User Registration
+##### Sign Up:
+
+```html
+POST {{local-host}}/api/v1/sign_up HTTP/1.1
+Content-Type: application/json
+
+{
+    "first_name" : "Another",
+    "last_name" : "Hashmi",
+    "email": "tuba@gmail.com",
+    "password": "hello123",
+    "role": "admin"
+}
+```
+#### User Login
+##### Sign In:
+
+```html
+POST {{local-host}}/api/v1/sign_in HTTP/1.1
+Authorization: Basic {{basic-auth-credentials}}
+Content-Type: application/json
+```
+##### Get User Info:
+
+```html
+GET {{local-host}}/api/v1/user_info HTTP/1.1
+Authorization: Bearer {{task-management-access-token}}
+```
+
+#### Admin Access
+##### List Users:
+
+```html
+GET {{local-host}}/api/v1/users HTTP/1.1
+Authorization: Basic {{basic-auth-credentials}}
+```
+##### Delete User:
+
+```html
+DELETE {{local-host}}/api/v1/delete_user/6 HTTP/1.1
+Authorization: Basic {{basic-auth-credentials}}
+```
+
+#### Tasks
+##### Add a New Task:
+```html
+POST {{local-host}}/api/v1/tasks/add HTTP/1.1
+Authorization: Basic {{basic-auth-credentials}}
+Content-Type: application/json
+
+{
+    "title": "Three New Task"
+}
+```
+
+##### Fetch a Task by ID as Admin:
+
+```html
+GET {{local-host}}/api/v1/tasks?task_id=4 HTTP/1.1
+Authorization: Basic {{basic-auth-credentials}}
+
+```
+##### Fetch All Tasks as Admin:
+
+```html
+GET {{local-host}}/api/v1/tasks HTTP/1.1
+Authorization: Basic {{basic-auth-credentials}}
+```
+
+##### Assign Task to a User:
+
+```html
+POST {{local-host}}/api/v1/assign-task HTTP/1.1
+Authorization: Basic {{basic-auth-credentials}}
+Content-Type: application/json
+
+{
+    "user_id": "3",
+    "task_id": "4"
+}
+
+```
+
+##### Update a Task:
+
+```html
+PUT {{local-host}}/api/v1/tasks/4 HTTP/1.1
+Authorization: Basic {{basic-auth-credentials}}
+Content-Type: application/json
+
+{
+    "description": "I'll not be deleted"
+}
+
+```
+##### Delete a Task:
+```html
+DELETE {{local-host}}/api/v1/tasks/4 HTTP/1.1
+Authorization: Basic {{basic-auth-credentials}}
+
+```
+Retrieve All Tasks Assigned:
+```html
+GET {{local-host}}/api/v1/assigned-tasks-list HTTP/1.1
+Authorization: Bearer {{task-management-access-token}}
+```
+
+#### Comments
+##### Add Comment to a Task:
+```html
+POST {{local-host}}/api/v1/tasks/100/comments HTTP/1.1
+Authorization: Basic {{basic-auth-credentials}}
+Content-Type: application/json
+
+{
+    "comment": "coment 4"
+}
+
+```
+##### Delete Comment from a Task:
+
+```html
+DELETE {{local-host}}/api/v1/tasks/1/comments/40 HTTP/1.1
+Authorization: Basic {{basic-auth-credentials}}
+```
+
+##### Update a Comment on a Task:
+
+```html
+PUT {{local-host}}/api/v1/tasks/1/comments/43 HTTP/1.1
+Authorization: Basic {{basic-auth-credentials}}
+Content-Type: application/json
+
+{
+    "comment": "edited comment 4"
+}
+```
+
+##### List all Comments on a Task:
+
+```html
+GET {{local-host}}/api/v1/tasks/1/comments HTTP/1.1
+Authorization: Basic {{basic-auth-credentials}}
+```
+
+Replace {{local-host}}, {{basic-auth-credentials}}, and {{task-management-access-token}} with the appropriate values when making requests.
