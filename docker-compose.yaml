@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  apiserver:
+    build:
+      context: .
+      dockerfile: ./deployment/local/Dockerfile
+    container_name: task_manager_apiserver
+    ports:
+      - 5000:5000
+    env_file:
+      - ./.env
+    volumes:
+      # this points to a relative /task_manager_api directory inside container.
+      - ./:/task_manager_api
