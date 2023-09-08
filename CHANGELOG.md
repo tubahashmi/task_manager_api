@@ -85,4 +85,22 @@ This file contains logs of all the changes made in this project.
 - [x] Updated `apiserver/api/views.py` to expose API endpoints.
 - [x] Updated `CHANGELOG.md`.
 
+
+## September 07, 2023
+
+- [x] Updated `data_management.py` to pre-populate `roles`, dummy `users`, `tasks` and `comments`.
+- [x] Added json data files at `template/data/`.
+- [x] Added unittests for signup api at: `/tests/test_signup`.
+- [x] Added unittests for signin api at: `/tests/test_signin`.
+- [x] Added unittests for comments api at: `/tests/test_comments`.
+- [x] Code formatted.
+- [x] Updated `requirements.txt`.
+- [x] Updated `README.md`.
+- [x] Updated `TODO.md`.
+- [x] Updated `README.md`.
+
+
+## September 08, 2023
+- [x] Updated `README.md`.
+- [x] Updated `CHANGELOG.md`.
 ---
