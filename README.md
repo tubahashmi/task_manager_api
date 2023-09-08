@@ -60,20 +60,21 @@ Export the following environment variables, once the requirements have been inst
 ***NOTE:** All these variables should be defined in [.env]()
 
 ```shell script
-export PYTHONPATH=/path/to/your/project
+export PYTHONPATH=/path/to/project/
+export ROOT_PATH=/path/to/project
 export UNIT_TESTING=True
 export PYTHONUNBUFFERED=1
-export BASIC_AUTH_USERNAME=admin
-export BASIC_AUTH_PASSWORD=admin
 export FLASK_ENV=development
 export FLASK_APP=app:create_app
-export DATABASE_URI=mysql://admin:admin@localhost:5432/yourdatabase
+export DATABASE_URI=mysql://admin:admin@localhost/taskmanagerdb
 export MYSQL_USER=admin
 export MYSQL_PASSWORD=admin
 export MYSQL_HOST=localhost
 export MYSQL_PORT=5432
-export MYSQL_DB=yourdatabase
-export ROOT_PATH=/path/to/your/project
+export MYSQL_DB=taskmanagerdb
+export FLASK_DEBUG=1
+export LOG_FILE_PATH=/var/log/taskmanager
+export JWT_SECRET_KEY=changemeplease
 ```
 
 ### Project Tree
@@ -249,6 +250,15 @@ Start the app by running the following command.
 flask run -h 0.0.0.0
 ```
 
+## API Documentation and Swagger Support
+
+Swagger has been set up to generate the API documentation automatically for each operation which is a combination of path and method, for each parameter, and for each response element.
+
+When the flask server is up, this documentation can be viewed at:
+
+```shell
+http://localhost:5000/apidocs/#/
+```
 
 ### Migration and Data Population
 
