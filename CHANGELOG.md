@@ -110,4 +110,13 @@ Usage:
 ## September 08, 2023
 - [x] Updated `README.md`.
 - [x] Updated `CHANGELOG.md`.
+
+---
+
+## September 13, 2023
+- [x] Updated documentation in multiple files.
+- [x] Reformatted multiple files.
+- [x] Updated `TODO.md`.
+- [x] Updated `README.md`.
+- [x] Updated `CHANGELOG.md`.
 ---
