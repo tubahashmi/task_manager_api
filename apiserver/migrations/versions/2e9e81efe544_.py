@@ -7,9 +7,10 @@ Revision ID: 2e9e81efe544
 Revises: bfcafce07ea9
 Create Date: 2023-09-06 21:12:47.352362
 
+"""
+
 # pylint: disable=C0103,C0116,E1101
 
-"""
 # Third-party
 import sqlalchemy as sa
 from alembic import op

@@ -362,7 +362,6 @@ class TaskResource(Resource):
         data = request.get_json()
         for key, value in data.items():
             setattr(task, key, value)
-
         db.session.commit()
         return {
             APIResponseKeys.MESSAGE.value: APIResponseMessage.TASK_UPDATED.value,

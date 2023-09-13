@@ -228,7 +228,7 @@ sudo mkdir /var/log/taskmanager
 sudo chmod 777 /var/log/taskmanager/
 ```
 
-After this we will start the Flask app along with New Relic APM.
+After this we will start the Flask app.
 
 ### Start Flask App
 
@@ -317,36 +317,37 @@ python data_management.py -c tasks comments
 ```
 Purpose is to pre-populate with dummy data in files.
 
+### Verify in db MySQL:
 
+```shell
+mysql -u admin taskmanagerdb -p
+```
+
+```shell
+mysql> select * from users;
++----+------------+-----------+-------------------------------+--------------------------------------------------------------------------------------------------------+---------+---------------------+
+| id | first_name | last_name | email                         | password                                                                                               | role_id | created_at          |
++----+------------+-----------+-------------------------------+--------------------------------------------------------------------------------------------------------+---------+---------------------+
+|  3 | Tuba       | Hashmi    | tuba.hashmi@gmail.com         | pbkdf2:sha256:600000$hxeajhHFpQ9MdKXL$58eba3423512527484f8d00aa33f342dcba157b5680cb77479a18e1f576cb7d0 |       1 | 2023-09-06 16:06:44 |
+|  5 | Another    | Hashmi    | another_random_user@gmail.com | pbkdf2:sha256:600000$Ccsch6PpV0mv5AWD$c867e3a2da4ca0ed571ae41139144655c1aab32cc4572f983f03301d368522b4 |       2 | 2023-09-06 16:06:44 |
+
+```
 ## Unit Tests
 
 Following unit tests are added:
 
-**Sign Up**
-- Positive Case: Sign Up with valid data (POST)
-- Negative Case: Sign Up with invalid data (POST)
 
-**Log In**
-- Positive Case: Login with valid creds (POST)
-- Negative Case: Login with invalid cred (POST)
+|       API        | HTTP METHOD | Postive Case                                                  | Negative  Case                                   |
+|:----------------:|:------------|---------------------------------------------------------------|--------------------------------------------------|
+|    `Sign up`     | POST        | Sign up with valid data.                                      | Sign up with invalid data.                       |
+|    `Logi In`     | POST        | Log in with valid creds.                                      | Log in with invalid creds.                       |
+|  `Add Comment`   | POST        | Add a valid comment.                                          | Add an invalid comment.                          |
+| `Update Comment` | PUT         | Update a comment with valid task_id and comment_id data.      | Update a comment with invalid task_id.           |
+|                  |             |                                                               | Update a comment with invalid comment_id.        |
+| `Fetch Comment`  | GET         | Fetch comments on a task by valid task_id.                    | Fetch comments on an invalid task.               |
+| `Delete Comment` | DELETE      | Delete a comment on a task with valid task_id and comment_id. | Delete a comment on a task with invalid task_id. |
+|                  |             |                                                               | Delete a comment with invalid comment_id.        |
 
-**Add Comment**
-- Positive Case: Add a valid comment (POST)
-- Negative Case: Add an invalid comment (POST)
-
-**Update Comment**
-- Positive Case: Update a comment with valid task_id and comment_id data (PUT)
-- Negative Case: Update a comment with invalid task_id (PUT)
-- Negative Case: Update a comment with invalid comment_id (PUT)
-
-**Fetch Comment**
-- Positive Case: Fetch comments on valid task_id (GET)
-- Negative Case: Fetch comments on invalid task_id (GET)
-
-**Delete Comment**
-- Positive Case: Delete a comment with valid task_id and comment_id (DELETE)
-- Negative Case: Delete a comment with invalid task_id (DELETE)
-- Negative Case: Delete a comment with invalid comment_id (DELETE)
 
 Further details on unitests can be found in [README.md](https://github.com/tubahashmi/task_manager_api/blob/main/tests/README.md) of `tests/`
 

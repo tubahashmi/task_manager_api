@@ -1,4 +1,5 @@
 ---
+
 <!-- Project todo list.
 
 This file contains all the todo regarding this project.
@@ -11,8 +12,11 @@ Authors:
   - Tuba Hashmi <hashmiatna@gmail.com>
 
 Maintainers:
-#   - Tuba Hashmi <hashmiatna@gmail.com>
+   - Tuba Hashmi <hashmiatna@gmail.com>
 -->
+
+
+
 ---
 
 # Task Manager API - TODO
@@ -22,7 +26,8 @@ Maintainers:
 ## Todo
 
 - [ ] Unit tests for all APIs and methods.
-- [ ] Dockerization
-- [ ] Deployment
+- [ ] Update documentation and reformat code.
+- [ ] Dockerization.
+- [ ] Deployment.
 
 ---
