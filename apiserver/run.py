@@ -1,3 +1,6 @@
+#!./venv/bin/python
+# -*- coding: utf-8 -*-
+
 """ Added for DEBUGGING purpose from pycharm, otherwise we can run it through cli
     ../apiserver$ flask run -h 0.0.0.0 """
 

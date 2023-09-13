@@ -1,11 +1,22 @@
+#!./venv/bin/python
+# -*- coding: utf-8 -*-
+
+"""
+Module for data population in the Task Manager application.
+
+This module provides functionality to populate data into the database
+for roles, users, tasks, and comments.
+
+"""
+
+# pylint: disable=C0301,W0718
+
 # Standard library
 import argparse
 import json
 import logging
 import os
-import sys
 from random import choice
-
 # Third-party
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -13,10 +24,8 @@ from sqlalchemy.orm import sessionmaker
 # First-party
 from apiserver.api.models import Comment, Task, User
 from apiserver.api.models.roles import Role
-from apiserver.commons.constants import PriorityLevel
 
 logger = logging.getLogger('TaskManager.data_management')
-
 
 DATABASE_URI = os.getenv('DATABASE_URI')
 
@@ -34,11 +43,12 @@ engine = create_engine(DATABASE_URI)
 Session = sessionmaker(bind=engine)
 session = Session()
 
+
 def populate_roles():
-    with open(roles_file, 'r') as file:
+    """Populate roles data from a JSON file."""
+    with open(roles_file, 'r', encoding='utf-8') as file:
         roles_data = json.load(file)
 
-    # Populate roles
     for role_data in roles_data['roles']:
         role_name = role_data.get('name')
 
@@ -52,11 +62,13 @@ def populate_roles():
                 session.add(role)
                 session.commit()
                 logger.info('Role <%s> added to the user collection', role_name)
-            except Exception as _e:
+            except Exception:
                 logger.info('Role <%s> failed to add to the user collection', role_name)
 
+
 def populate_users():
-    with open(users_file, 'r') as file:
+    """Populate users data from a JSON file."""
+    with open(users_file, 'r', encoding='utf-8') as file:
         users_data = json.load(file)
     for user_data in users_data['users']:
         try:
@@ -64,15 +76,18 @@ def populate_users():
             session.add(user)
             session.commit()
             logger.info('User <%s> added to the users collection', user_data.get('email'))
-        except Exception as _e:
+        except Exception:
             logger.error('User <%s> failed to add to the users collection', user_data.get('email'))
+
+
 def populate_tasks():
-    with open(tasks_file, 'r') as file:
+    """Populate tasks data from a JSON file."""
+    with open(tasks_file, 'r', encoding='utf-8') as file:
         tasks_data = json.load(file)
 
     users_ids = []
     # Load JSON data from tasks.json
-    with open(users_file, 'r') as file:
+    with open(users_file, 'r', encoding='utf-8') as file:
         users_data = json.load(file)
 
     for user_data in users_data['users']:
@@ -89,15 +104,17 @@ def populate_tasks():
             session.add(task)
             session.commit()
             logger.info('Task <%s> added to the tasks collection', task_data.get('title'))
-        except Exception as _e:
+        except Exception:
             logger.error('Task <%s> failed to add to the tasks collection', task_data.get('title'))
 
+
 def populate_comments():
-    with open(comments_file, 'r') as file:
+    """Populate comments data from a JSON file."""
+    with open(comments_file, 'r', encoding='utf-8') as file:
         comments_data = json.load(file)
     tasks_ids = []
     # Load JSON data from tasks.json
-    with open(tasks_file, 'r') as file:
+    with open(tasks_file, 'r', encoding='utf-8') as file:
         tasks_data = json.load(file)
 
     for task_data in tasks_data['tasks']:
@@ -114,16 +131,28 @@ def populate_comments():
             session.add(comment)
             session.commit()
             logger.info('Comment added to the comments collection')
-        except Exception as _e:
-            logger.error('Comment <%s> failed to add to the comments collection')
+        except Exception:
+            logger.error('Comment <%s> failed to add to the comments collection', comment_data.get('content'))
+
 
 def main():
+    """Populate data tables based on command-line arguments.
+
+    This function parses command-line arguments to determine which data tables to populate.
+
+    Command-line options:
+        -c, --collection: Specify the data collection to populate (choices: all, users, tasks, comments).
+
+    Returns:
+        None
+    """
     try:
         logger.info('Data population begins.')
 
         # Parse command-line arguments
         parser = argparse.ArgumentParser(description='Populate data tables.')
-        parser.add_argument('-c', '--collection', choices=['all', 'users', 'tasks', 'comments'], help='Specify data collection')
+        parser.add_argument('-c', '--collection', choices=['all', 'users', 'tasks', 'comments'],
+                            help='Specify data collection')
         args = parser.parse_args()
 
         # Always populate roles
@@ -143,11 +172,12 @@ def main():
 
         logger.info('Data population ends.')
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=C0103
         session.rollback()
-        logger.error(f'Error: {e}')
+        logger.error('Error: {%s}', str(e))
     finally:
         session.close()
+
 
 if __name__ == '__main__':
     main()

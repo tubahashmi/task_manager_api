@@ -1,14 +1,19 @@
 # Task Management API - CHANGELOG
 
-This file contains logs of all the changes made in this project.
+<!-- Project's Change logs
+
+Usage:
+  This file contains logs of all the changes made in this project.
 
 ## Authors
 
-- Tuba Hashmi <hashmiatna@gmail.com>
+  - Tuba Hashmi <hashmiatna@gmail.com>
 
 ## Maintainers
 
-- Tuba Hashmi <hashmiatna@gmail.com>
+  - Tuba Hashmi <hashmiatna@gmail.com>
+
+-->
 
 ---
 
@@ -85,6 +90,7 @@ This file contains logs of all the changes made in this project.
 - [x] Updated `apiserver/api/views.py` to expose API endpoints.
 - [x] Updated `CHANGELOG.md`.
 
+---
 
 ## September 07, 2023
 
@@ -99,6 +105,7 @@ This file contains logs of all the changes made in this project.
 - [x] Updated `TODO.md`.
 - [x] Updated `README.md`.
 
+---
 
 ## September 08, 2023
 - [x] Updated `README.md`.
